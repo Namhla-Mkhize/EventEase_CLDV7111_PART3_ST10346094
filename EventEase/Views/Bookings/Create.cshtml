@@ -6,27 +6,36 @@
 <div class="container mt-4">
     <h1>Create Booking</h1>
 
-<form asp-action="Create" method="post">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        </div>
+    }
+
+    <form asp-action="Create" method="post">
         <div class="mb-3">
-        <label class="form-label">Venue</label>
+            <label class="form-label">Venue</label>
             <select asp-for="VenueId" class="form-select"
-                asp-items="@(new SelectList(ViewBag.Venues, "VenueId", "VenueName"))">
-            <option value="">-- Select a Venue --</option>
-        </select>
-    </div>
+                    asp-items="@(new SelectList(ViewBag.Venues, "VenueId", "VenueName"))">
+                <option value="">-- Select a Venue --</option>
+            </select>
+        </div>
         <div class="mb-3">
-        <label class="form-label">Event</label>
+            <label class="form-label">Event</label>
             <select asp-for="EventId" class="form-select"
-                asp-items="@(new SelectList(ViewBag.Events, "EventId", "EventName"))">
-            <option value="">-- Select an Event --</option>
-        </select>
-    </div>
+                    asp-items="@(new SelectList(ViewBag.Events, "EventId", "EventName"))">
+                <option value="">-- Select an Event --</option>
+            </select>
+        </div>
         <div class="mb-3">
-        <label class="form-label">Booking Date</label>
+            <label class="form-label">Booking Date</label>
             <input asp-for="BookingDate" type="date" class="form-control" />
-    </div>
-     <button type="submit" class="btn btn-primary">Create Booking</button>
-     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</form> 
- 
+        </div>
+        <button type="submit" class="btn btn-primary">Create Booking</button>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </form>
 </div>

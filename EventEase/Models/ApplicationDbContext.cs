@@ -1,19 +1,18 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace EventEase.Models
 {
-    public class ApplicationDbContext :DbContext
+    public class ApplicationDbContext : DbContext
     { 
-        
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
            : base(options)
         {
         }
-        //  represents database tables 
+
         public DbSet<Venue> Venues { get; set; }  
         public DbSet<Event> Events { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<EventType> EventTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +28,5 @@ namespace EventEase.Models
                 .HasForeignKey(b => b.EventId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
-
     }
 }

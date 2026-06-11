@@ -3,28 +3,37 @@
 @{
     ViewData["Title"] = "Create Venue";
 }
-<div class="container mt-4"> 
+<div class="container mt-4">
 
-<h1>Create Venue</h1>
+    <h1>Create Venue</h1>
 
-<form asp-action="Create" method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
         <div class="mb-3">
-       <label class="form-label">Venue Name</label>
+            <label class="form-label">Venue Name</label>
             <input asp-for="VenueName" class="form-control" />
-    </div>
+        </div>
         <div class="mb-3">
-        <label class="form-label">Location</label>
+            <label class="form-label">Location</label>
             <input asp-for="Location" class="form-control" />
-    </div>
+        </div>
         <div class="mb-3">
-        <label class="form-label">Capacity</label>
+            <label class="form-label">Capacity</label>
             <input asp-for="Capacity" class="form-control" />
-    </div>
+        </div>
         <div class="mb-3">
-        <label class="form-label">Image URL</label>
-            <input asp-for="ImageURL" class="form-control" />
-    </div>
+            <label class="form-label">Available</label>
+            <select asp-for="Availability" class="form-select">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Venue Image</label>
+            <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+        </div>
         <button type="submit" class="btn btn-primary">Create</button>
         <a asp-action="Index" class="btn btn-secondary">Back to List </a>
-</form> 
+    </form>
 </div>

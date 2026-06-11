@@ -12,16 +12,49 @@ namespace EventEase.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
+
+        public IActionResult Index(string searchString, int? eventTypeId, DateTime? startDate, DateTime? endDate)
         {
-            var events = _context.Events.Include(e => e.Venue).ToList();
-            return View(events);
+            var events = _context.Events
+                .Include(e => e.Venue)
+                .Include(e => e.EventType)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                events = events.Where(e =>
+                    (e.EventName != null && e.EventName.Contains(searchString)) ||
+                    (e.Venue != null && e.Venue.VenueName != null && e.Venue.VenueName.Contains(searchString)));
+            }
+
+            if (eventTypeId.HasValue)
+            {
+                events = events.Where(e => e.EventTypeId == eventTypeId.Value);
+            }
+
+            if (startDate.HasValue)
+            {
+                events = events.Where(e => e.EventDate >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                events = events.Where(e => e.EventDate <= endDate.Value);
+            }
+
+            ViewBag.SearchString = searchString;
+            ViewBag.EventTypes = _context.EventTypes.ToList();
+            ViewBag.SelectedEventType = eventTypeId;
+            ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
+            ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
+
+            return View(events.ToList());
         }
 
-        // GET - shows the create form
         public IActionResult Create()
         {
             ViewBag.Venues = _context.Venues.ToList();
+            ViewBag.EventTypes = _context.EventTypes.ToList();
             return View();
         }
 
@@ -34,16 +67,19 @@ namespace EventEase.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
+            ViewBag.Venues = _context.Venues.ToList();
+            ViewBag.EventTypes = _context.EventTypes.ToList();
             return View(newEvent);
         }
+
         public IActionResult Edit(int id)
         {
             var newEvent = _context.Events.Find(id);
             ViewBag.Venues = _context.Venues.ToList();
+            ViewBag.EventTypes = _context.EventTypes.ToList();
             return View(newEvent);
         }
 
-        // POST - handles edit submission
         [HttpPost]
         public IActionResult Edit(Event newEvent)
         {
@@ -53,20 +89,28 @@ namespace EventEase.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
+            ViewBag.Venues = _context.Venues.ToList();
+            ViewBag.EventTypes = _context.EventTypes.ToList();
             return View(newEvent);
         }
 
-        // GET - shows delete confirmation
         public IActionResult Delete(int id)
         {
             var newEvent = _context.Events.Find(id);
             return View(newEvent);
         }
 
-        // POST - handles delete confirmation
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
+            bool hasBookings = _context.Bookings.Any(b => b.EventId == id);
+
+            if (hasBookings)
+            {
+                TempData["ErrorMessage"] = "Cannot delete this event because it has active bookings.";
+                return RedirectToAction("Index");
+            }
+
             var newEvent = _context.Events.Find(id);
             if (newEvent != null)
             {
@@ -75,8 +119,5 @@ namespace EventEase.Controllers
             }
             return RedirectToAction("Index");
         }
-
-
     }
-    
 }

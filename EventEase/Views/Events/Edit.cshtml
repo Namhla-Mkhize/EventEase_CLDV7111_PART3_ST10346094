@@ -5,34 +5,42 @@
 }
 <div class="container mt-4">
 
-<h1>Edit Event</h1>
+    <h1>Edit Event</h1>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="EventId" />
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="EventId" />
         <div class="mb-3">
-        <label>Event Name</label>
+            <label>Event Name</label>
             <input asp-for="EventName" class="form-control" />
-    </div>
+        </div>
 
         <div class="mb-3">
-        <label class="form-label">Event Date</label>
-            <input asp-for="EventDate" class="form-control" />
-    </div>
+            <label class="form-label">Event Date</label>
+            <input asp-for="EventDate" type="date" class="form-control" />
+        </div>
 
         <div class="mb-3">
-         <label class="form-label">Description</label>
+            <label class="form-label">Description</label>
             <input asp-for="Description" class="form-control" />
-    </div>
+        </div>
 
         <div class="mb-3">
-        <label class="form-label">Venue</label>
+            <label class="form-label">Venue</label>
             <select asp-for="VenueId" class="form-select"
-                asp-items="@(new SelectList(ViewBag.Venues, "VenueId", "VenueName"))">
-            <option value="">-- Select a Venue --</option>
-        </select>
-    </div>
+                    asp-items="@(new SelectList(ViewBag.Venues, "VenueId", "VenueName"))">
+                <option value="">-- Select a Venue --</option>
+            </select>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</form>
+        <div class="mb-3">
+            <label class="form-label">Event Type</label>
+            <select asp-for="EventTypeId" class="form-select"
+                    asp-items="@(new SelectList(ViewBag.EventTypes, "EventTypeId", "EventTypeName"))">
+                <option value="">-- Select Event Type --</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </form>
 </div>
